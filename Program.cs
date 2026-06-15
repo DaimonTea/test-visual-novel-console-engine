@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace visualnovel
@@ -9,7 +9,13 @@ namespace visualnovel
         {
             string advice = "Press 'p' to pause.";
             string divider = "-------------------";
-            Console.WriteLine($"{advice}\n{divider}\n\n-> {textLine} <-\n\n{divider}");
+            Console.Write($"{advice}\n{divider}\n\n-> ");
+            foreach (var letter in textLine)
+            {
+                Console.Write(letter);
+                Thread.Sleep(50);
+            }
+            Console.Write($" <-\n\n{divider}");
             playerChoice = Console.ReadLine();
             Console.Clear();
         }
