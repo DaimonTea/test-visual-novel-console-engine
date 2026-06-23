@@ -5,7 +5,7 @@ namespace visualnovel
 {
     class Program
     {
-        public static void printTextLine(in string textLine, in string plName, out string playerChoice)
+        public static void printTextLine(in string textLine, in string plName, out ConsoleKeyInfo playerChoice)
         {
             string advice = "Press 'p' to pause.";
             string divider = "-------------------";
@@ -13,24 +13,24 @@ namespace visualnovel
             foreach (var letter in textLine)
             {
                 Console.Write(letter);
-                Thread.Sleep(50);
+                // Thread.Sleep(50);
             }
             Console.Write($" <-\n\n{divider}");
-            playerChoice = Console.ReadLine();
+            playerChoice = Console.ReadKey(intercept: true);
             Console.Clear();
         }
 
-        public static int basicActionSelection(in string playerChoice, in int countLine)
+        public static int basicActionSelection(in ConsoleKeyInfo playerChoice, in int countLine)
         {
-            switch (playerChoice)
+            switch (playerChoice.Key)
             {
-                case "p":
-                    enterPauseChoice(out string pausePlayerChoice);
-                    switch (pausePlayerChoice)
+                case ConsoleKey.P:
+                    enterPauseChoice(out var key);
+                    switch (key.Key)
                     {
-                        case "r":
+                        case ConsoleKey.R:
                             return -1;
-                        case "l":
+                        case ConsoleKey.L:
                             if (loadNumberedSave(out int cCountLine))
                             {
                                 return cCountLine;
@@ -39,7 +39,7 @@ namespace visualnovel
                             {
                                 return -1;
                             }
-                        case "s":
+                        case ConsoleKey.S:
                             saveExistingGame(in countLine);
                             return -1;
                         default:
@@ -50,10 +50,10 @@ namespace visualnovel
             }
         }
 
-        public static void enterPauseChoice(out string pausePlayerChoice)
+        public static void enterPauseChoice(out ConsoleKeyInfo pausePlayerChoice)
         {
             Console.WriteLine($"The game is currently paused.\nPress 'r' to resume\n'l' to load game\n's' to save existing game.\n\nt.me/ntfs808/");
-            pausePlayerChoice = Console.ReadLine();
+            pausePlayerChoice = Console.ReadKey(intercept: true);
             Console.Clear();
         }
 
@@ -64,7 +64,7 @@ namespace visualnovel
             if (int.TryParse(sCountLine, out countLine) == false)
             {
                 Console.WriteLine("You've entered incorrect save number");
-                Console.ReadKey();
+                Console.ReadKey(intercept: true);
                 return false;
             }
             countLine--;
@@ -75,14 +75,14 @@ namespace visualnovel
         public static void saveExistingGame(in int countLine)
         {
             Console.WriteLine($"Your save number is {countLine}.\nTo use it, press 'l' in the menu to load the game and enter it.");
-            Console.ReadKey();
+            Console.ReadKey(intercept: true);
             Console.Clear();
         }
 
         public static void switchLines(in string textLine, in string plName, in int countLine, out int nCountLine)
         {
             nCountLine = countLine;
-            printTextLine(in textLine, in plName, out string playerChoice);
+            printTextLine(in textLine, in plName, out ConsoleKeyInfo playerChoice);
             int whateverPlayerChose = basicActionSelection(in playerChoice, in countLine);
             switch (whateverPlayerChose)
             {
@@ -100,6 +100,7 @@ namespace visualnovel
 
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
             Console.WriteLine($"Enter your name, please.");
             string plName = Console.ReadLine();
             Console.Clear();
